@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Asset Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f8fafc;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+    }
+    .title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 1rem;
+    }
+    .category {
+      display: inline-block;
+      background: #3b82f6;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .description {
+      font-size: 1rem;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    .uploader {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+    .btn-back {
+      display: inline-block;
+      background: #3b82f6;
+      color: white;
+      padding: 0.7rem 1.4rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+    .btn-back:hover {
+      background: #2563eb;
+    }
+    .asset-preview {
+      margin: 2rem 0;
+      padding: 2rem;
+      background: #f8fafc;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .preview-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .preview-audio,
+    .preview-video {
+      width: 100%;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+
+    .document-preview {
+      padding: 2rem;
+      border: 2px dashed #e2e8f0;
+      border-radius: 8px;
+    }
+
+    .document-link {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: 2px solid #3b82f6;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .document-link:hover {
+      background: #3b82f6;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="category" th:text="${asset.category}">CATEGORY</div>
+  <h1 class="title" th:text="${asset.title}">Asset Title</h1>
+  <p class="description" th:text="${asset.description}">This is a detailed description of the asset.</p>
+  <div class="asset-preview">
+    <!-- Image preview -->
+    <img th:if="${asset.category == 'IMAGE'}"
+         th:src="@{'/uploads/' + ${asset.fileUrl}}"
+         alt="Asset Preview"
+         class="preview-image">
+
+    <!-- Audio preview -->
+    <audio th:if="${asset.category == 'MUSIC'}"
+           controls
+           class="preview-audio">
+      <source th:src="@{'/uploads/' + ${asset.fileUrl}}" type="audio/mpeg">
+      Your browser does not support audio playback.
+    </audio>
+
+    <!-- Video preview -->
+    <video th:if="${asset.category == 'VIDEO'}"
+           controls
+           class="preview-video">
+      <source th:src="@{'/uploads/' + ${asset.fileUrl}}" type="video/mp4">
+      Your browser does not support video playback.
+    </video>
+
+    <!-- Document preview (link) -->
+    <div th:if="${asset.category == 'DOCUMENT'}" class="document-preview">
+      <a th:href="@{'/uploads/' + ${asset.fileUrl}}"
+         target="_blank"
+         class="document-link">
+        View Document
+      </a>
+    </div>
+  </div>
+
+  <p class="uploader" th:text="'Uploaded by: ' + ${asset.uploader.username}">Uploaded by: Username</p>
+  <a href="/buyer/dashboard" class="btn-back">Back to Dashboard</a>
+</div>
+</body>
+</html>

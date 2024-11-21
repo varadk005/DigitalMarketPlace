@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Upload Asset - Digital Asset Marketplace</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      min-height: 100vh;
+      color: #0f172a;
+    }
+
+    .header {
+      background: white;
+      padding: 1.2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      color: #0f172a;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(120deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .user-nav {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .user-welcome {
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .main-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .upload-form {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #0f172a;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #f8fafc;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #3b82f6;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .file-upload-area {
+      border: 2px dashed #e2e8f0;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    .file-upload-area:hover,
+    .file-upload-area.highlight {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .selected-file {
+      background: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      display: none;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      flex: 1;
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .hint-text {
+      color: #64748b;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+      }
+
+      .main-container {
+        padding: 1rem;
+      }
+
+      .upload-form {
+        padding: 1.5rem;
+      }
+
+      .btn-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <h1>Digital Asset Marketplace</h1>
+  <div class="user-nav">
+    <span class="user-welcome" th:text="${'Welcome, ' + session.user.username}">Welcome, User</span>
+    <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+  </div>
+</div>
+
+<div class="main-container">
+  <div class="upload-form">
+    <form th:action="@{/seller/upload}" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" placeholder="Enter asset title" required>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" placeholder="Provide a detailed description" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+          <option value="">Select Category</option>
+          <option value="IMAGE">Image</option>
+          <option value="MUSIC">Music</option>
+          <option value="VIDEO">Video</option>
+          <option value="DOCUMENT">Document</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>File Upload</label>
+        <div class="file-upload-area" onclick="document.getElementById('file').click()" id="dropArea">
+          <input type="file" id="file" name="file" style="display: none;" required onchange="updateFileName(this)">
+          <p>Click to select or drag and drop your file here</p>
+          <p class="hint-text">Maximum file size: 10MB</p>
+          <div id="selectedFile" class="selected-file"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="tags">Tags</label>
+        <input type="text" id="tags" name="tags" placeholder="Enter tags, separated by commas">
+        <p class="hint-text">Example: technology, music, video</p>
+      </div>
+
+      <div class="btn-container">
+        <a href="/seller/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+        <button type="submit" class="btn btn-primary">Upload Asset</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function updateFileName(input) {
+    const fileName = input.files[0]?.name;
+    const selectedFileDiv = document.getElementById('selectedFile');
+    if (fileName) {
+      selectedFileDiv.textContent = `Selected file: ${fileName}`;
+      selectedFileDiv.style.display = 'block';
+    } else {
+      selectedFileDiv.style.display = 'none';
+    }
+  }
+
+  const dropArea = document.getElementById('dropArea');
+
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false);
+  });
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, highlight, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false);
+  });
+
+  function highlight() {
+    dropArea.classList.add('highlight');
+  }
+
+  function unhighlight() {
+    dropArea.classList.remove('highlight');
+  }
+
+  dropArea.addEventListener('drop', handleDrop, false);
+
+  function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    const fileInput = document.getElementById('file');
+    fileInput.files = files;
+    updateFileName(fileInput);
+  }
+</script>
+</body>
+</html>
